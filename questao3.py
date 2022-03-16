@@ -9,42 +9,42 @@ from sklearn.metrics import f1_score
 
 def matriz_confusao(verdadeiro_y,estimado_y):
     i = 0
-    matrix_confusion = [[0,0,0],
+    matriz = [[0,0,0],
                         [0,0,0],
                         [0,0,0]]
     while(i < len(verdadeiro_y)):
 
         if (verdadeiro_y[i]) == 0:
             if(estimado_y[i]) == 0:
-                matrix_confusion[0][0] += 1
+                matriz[0][0] += 1
             elif(estimado_y[i]) == 1:
-                matrix_confusion[0][1] += 1
+                matriz[0][1] += 1
             else:
-                matrix_confusion[0][2] +=1
+                matriz[0][2] +=1
 
         elif (verdadeiro_y[i]) == 1:
             if(estimado_y[i]) == 0:
-                matrix_confusion[1][0] += 1
+                matriz[1][0] += 1
             elif(estimado_y[i]) == 1:
-                matrix_confusion[1][1] += 1
+                matriz[1][1] += 1
             else:
-                matrix_confusion[1][2] +=1   
+                matriz[1][2] +=1   
 
         else:
             if(estimado_y[i]) == 0:
-                matrix_confusion[2][0] += 1
+                matriz[2][0] += 1
             elif(estimado_y[i]) == 1:
-                matrix_confusion[2][1] += 1
+                matriz[2][1] += 1
             else:
-                matrix_confusion[2][2] +=1
+                matriz[2][2] +=1
         i= i+1
-    return matrix_confusion
+    return matriz
 
 def calcular_taxa_de_acerto(c_matriz):
     #A taxa de acerto do classificador é a (soma da diagonal principal)/(soma total da matriz)
 
     #somando diagonal principal
-    soma_diagonal = c_matriz[0][0] + c_matriz[1][1] + c_matriz[2][2]
+    #soma_diagonal = c_matriz[0][0] + c_matriz[1][1] + c_matriz[2][2]
     soma_total = 0
     #somando total matriz
     for i in range(3):
@@ -52,10 +52,10 @@ def calcular_taxa_de_acerto(c_matriz):
             soma_total += c_matriz[i][j]
     
     print(soma_total)
-    print(soma_diagonal)
+    #print(soma_diagonal)
 
-    taxa_acerto = soma_diagonal / soma_total
-    print(taxa_acerto)
+    taxa_acerto = (c_matriz[0][0] + c_matriz[1][1] + c_matriz[2][2]) / soma_total
+    #print(taxa_acerto)
     print("A taxa de acerto é {0:.2f}".format(taxa_acerto))
 
 def calcular_taxa_de_precisao(c_matriz):
