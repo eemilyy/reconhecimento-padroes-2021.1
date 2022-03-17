@@ -41,48 +41,29 @@ def matriz_confusao(verdadeiro_y,estimado_y):
         i= i+1
     return matriz
 
-def calcular_taxa_de_acerto(c_matriz):
-    #A taxa de acerto do classificador é a (soma da diagonal principal)/(soma total da matriz)
-
-    #somando diagonal principal
-    #soma_diagonal = c_matriz[0][0] + c_matriz[1][1] + c_matriz[2][2]
+def taxa_acerto(c_matriz):
     soma_total = 0
-    #somando total matriz
     for i in range(3):
         for j in range(3):
             soma_total += c_matriz[i][j]
-    
-    #print(soma_total)
-    #print(soma_diagonal)
 
     taxa_acerto = (c_matriz[0][0] + c_matriz[1][1] + c_matriz[2][2]) / soma_total
-    #print(taxa_acerto)
-    print("Taxa de acerto: " + str(taxa_acerto))
+    return taxa_acerto
 
-def calcular_taxa_de_precisao(c_matriz):
-    # presisao = taxa_de_acerto da classe / soma de toda classe
+def taxa_precisao(c_matriz):
 
-    #taxa de preciso classe 0
     classe_0 = c_matriz[0][0] / (c_matriz[0][0] + c_matriz[1][0] + c_matriz[2][0])
-    #taxa de precisao classe 1
     classe_1 = c_matriz[1][1] / (c_matriz[0][1] + c_matriz[1][1] + c_matriz[2][1])
-    #taxa de precisao classe 2
     classe_2 = c_matriz[2][2] / (c_matriz[0][2] + c_matriz[1][2] + c_matriz[2][2])
 
-    #print("Taxa de Precisão:\nClasse 0 = {0}\nClasse 1 = {1}\nClasse 2 = {2}".format(classe_0, classe_1, classe_2))
     return classe_0, classe_1, classe_2
 
-def calcular_taxa_de_recall(c_matriz):
-    # presisao = taxa_de_acerto da classe / soma de toda classe
+def taxa_recall(c_matriz):
 
-    #taxa de preciso classe 0
     classe_0 = c_matriz[0][0] / (c_matriz[0][0] + c_matriz[0][1] + c_matriz[0][2])
-    #taxa de precisao classe 1
     classe_1 = c_matriz[1][1] / (c_matriz[1][0] + c_matriz[1][1] + c_matriz[1][2])
-    #taxa de precisao classe 2
     classe_2 = c_matriz[2][2] / (c_matriz[2][0] + c_matriz[2][1] + c_matriz[2][2])
 
-    #print("Taxa de Recall:\nClasse 0 = {0}\nClasse 1 = {1}\nClasse 2 = {2}".format(classe_0, classe_1, classe_2))
     return classe_0, classe_1, classe_2
 
 def medida_F(pre_classe1, pre_classe2, pre_classe3, rec_classe1, rec_classe2, rec_classe3):
@@ -92,29 +73,44 @@ def medida_F(pre_classe1, pre_classe2, pre_classe3, rec_classe1, rec_classe2, re
 
     return f1, f2, f3
 
+def calcula_fp(c_matriz):
+
+    classe_0 = (c_matriz[1][0] + c_matriz[2][0]) / ((c_matriz[1][0] + c_matriz[2][0]) + (c_matriz[1][1] + c_matriz[1][2] + c_matriz[2][1] + c_matriz[2][2]))
+    classe_1 = (c_matriz[0][1] + c_matriz[2][1]) / ((c_matriz[0][1] + c_matriz[2][1]) + (c_matriz[0][0] + c_matriz[0][2] + c_matriz[2][0] + c_matriz[2][2]))
+    classe_2 = (c_matriz[0][2] + c_matriz[1][2]) / ((c_matriz[0][2] + c_matriz[1][2]) + (c_matriz[0][0] + c_matriz[0][1] + c_matriz[1][0] + c_matriz[1][1]))
+
+    return classe_0, classe_1, classe_2
+
 
 x,y = load_wine(return_X_y = True)
-treino_x, teste_x, treino_y, teste_y = train_test_split(x,y,test_size=0.30) #test_size proporção 
+treino_x, teste_x, treino_y, teste_y = train_test_split(x,y,test_size=0.30) 
 
 knn = KNeighborsClassifier(n_neighbors=1, weights= "distance",metric="euclidean")
 knn.fit(treino_x,treino_y)
-
 estimado_y = knn.predict(teste_x)
 verdadeiro_y = teste_y
+
+
 c_matriz = matriz_confusao(verdadeiro_y,estimado_y)
 print(c_matriz[0])
 print(c_matriz[1])
 print(c_matriz[2])
-print("Matriz calculada por API = \n" + str(confusion_matrix(verdadeiro_y,estimado_y))) #confusion_matrix(verdadeiro_y, estimado_y) API
 
-calcular_taxa_de_acerto(c_matriz)
-print("Taxa de acerto dado pela API = " + str(accuracy_score(verdadeiro_y, estimado_y)))
-pre_classe1, pre_classe2, pre_classe3 = calcular_taxa_de_precisao(c_matriz)
-print("Precisão: [ {0}  {1}  {2} ]".format(pre_classe1, pre_classe2, pre_classe3))
-print("Precisão dado pela API = " + str(precision_score(verdadeiro_y,estimado_y, average=None)))
-rec_classe1, rec_classe2, rec_classe3 = calcular_taxa_de_recall(c_matriz)
+rec_classe1, rec_classe2, rec_classe3 = taxa_recall(c_matriz)
 print("Recall: [ {0}  {1}  {2} ]".format(rec_classe1, rec_classe2, rec_classe3))
-print("Recall dado pela API = " + str(recall_score(verdadeiro_y, estimado_y, average=None)))
+acerto = taxa_acerto(c_matriz)
+print("Taxa de acerto: " + str(acerto))
+pre_classe1, pre_classe2, pre_classe3 = taxa_precisao(c_matriz)
+print("Precisão: [ {0}  {1}  {2} ]".format(pre_classe1, pre_classe2, pre_classe3))
 f1, f2, f3 = medida_F(pre_classe1, pre_classe2, pre_classe3, rec_classe1, rec_classe2, rec_classe3)
 print("Medida F: [ {0}  {1}  {2} ]".format(f1, f2, f3))
+fp_c1, fp_c2, fp_c3 = calcula_fp(c_matriz)
+print("FP: [ {0}  {1}  {2} ]".format(fp_c1, fp_c2, fp_c3))
+
+print("-"*50)
+
+print("Matriz calculada por API = \n" + str(confusion_matrix(verdadeiro_y,estimado_y)))
+print("Recall dado pela API = " + str(recall_score(verdadeiro_y, estimado_y, average=None)))
+print("Taxa de acerto dado pela API = " + str(accuracy_score(verdadeiro_y, estimado_y)))
+print("Precisão dado pela API = " + str(precision_score(verdadeiro_y,estimado_y, average=None)))
 print("Medida-F dado pela API = " + str(f1_score(verdadeiro_y, estimado_y, average=None)))
