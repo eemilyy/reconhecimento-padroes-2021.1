@@ -41,11 +41,11 @@ public class questao3 {
         
         for(int i = 0; i < img.length; i++){
             for(int j = 0; j < img[0].length; j++){
-                newImg[i][j] = (img[i][j] / img2[i][j]);
+                newImg[i][j] = (int)((double) img[i][j] * 255) / img2[i][j];
             }
         }
         
-        corrigirImagem(img);
-        ImagemDigital.plotarImagem(img, "Imagem com Divisão");
+        corrigirImagem(newImg);
+        ImagemDigital.plotarImagem(newImg, "Imagem com Divisão");
     }    
 }

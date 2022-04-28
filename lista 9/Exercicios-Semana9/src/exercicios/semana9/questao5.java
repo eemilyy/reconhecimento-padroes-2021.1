@@ -46,18 +46,7 @@ public class questao5 {
             }
         }
         
-        /**for(int i = 2; i <= 10; i++){
-            int[][] img2 = ImagemDigital.carregarImagem("./ruido/lena" + i + ".png");            
-            
-            for(int k = 0; k < img.length; k++){
-                for(int j = 0; j < img[0].length; j++){
-                    img[k][j] = img[k][j] + img2[k][j];
-                }
-            }
-        }**/
-        
         corrigirImagem(img);
         ImagemDigital.plotarImagem(img, "Media 100");
-        //int[][] img = ImagemDigital.carregarImagem("./imagens/lena_gray_512.png");
     }
 }
