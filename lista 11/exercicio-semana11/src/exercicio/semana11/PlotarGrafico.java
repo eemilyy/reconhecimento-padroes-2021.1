@@ -18,6 +18,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author emily
  */
 public class PlotarGrafico extends JFrame{
+    
     public PlotarGrafico(int[] vet){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("PlotarGrafico");
